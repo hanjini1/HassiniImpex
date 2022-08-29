@@ -1,3 +1,4 @@
+using API.Helpers;
 using Core.Contracts;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -5,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var _config = builder.Configuration;
 // Add services to the container.
-
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<StoreContext>(options =>
 {
   options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddScoped((typeof(IGenericRepository<>)), (typeof(GenericRepository<>)));
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
@@ -42,7 +44,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();

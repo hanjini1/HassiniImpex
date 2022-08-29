@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.Contracts;
 using Core.Entites;
+using Core.Specifications;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
   public class ProductRepository : IProductRepository
   {
+
     private readonly StoreContext _context;
     public ProductRepository(StoreContext context)
     {
@@ -18,6 +20,7 @@ namespace Infrastructure.Data
 
     public async Task<IReadOnlyList<ProductBrand>> GetProductBrandsAsync()
     {
+
       return await _context.ProductBrands.ToListAsync();
     }
 
