@@ -8,6 +8,7 @@ using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace API.Extensions
 {
@@ -18,6 +19,11 @@ namespace API.Extensions
       services.AddDbContext<StoreContext>(options =>
       {
         options.UseSqlite(config.GetConnectionString("DefaultConnection"));
+      });
+      services.AddSingleton<IConnectionMultiplexer>(c =>
+      {
+        var configuration = ConfigurationOptions.Parse(config.GetConnectionString("Redis"), true);
+        return ConnectionMultiplexer.Connect(configuration);
       });
       services.Configure<ApiBehaviorOptions>(options =>
       {
@@ -36,6 +42,7 @@ namespace API.Extensions
       });
       services.AddScoped<IProductRepository, ProductRepository>();
       services.AddScoped((typeof(IGenericRepository<>)), (typeof(GenericRepository<>)));
+      services.AddScoped<IBasketRepository, BasketRepository>();
       services.AddCors(opt =>
       {
         opt.AddPolicy("CorsPolicy", policy =>
@@ -43,6 +50,7 @@ namespace API.Extensions
           policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
         });
       });
+      services.AddHttpContextAccessor();
       return services;
     }
   }

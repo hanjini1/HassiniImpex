@@ -4,3 +4,4 @@ Template
 appsettings.json
 *.db
 *.db-*
+*.rdb

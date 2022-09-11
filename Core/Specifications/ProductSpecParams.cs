@@ -34,11 +34,11 @@ namespace Core.Specifications
     }
     public string? Sort { get; set; }
 
-    private string _search;
-    public string Search
+    private string? _search = string.Empty;
+    public string? Search
     {
       get { return _search; }
-      set { _search = value.ToLower(); }
+      set { _search = value?.ToLower(); }
     }
 
   }
