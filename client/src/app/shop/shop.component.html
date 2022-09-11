@@ -1,0 +1,97 @@
+<div class="container mt-5">
+  <div class="row">
+    <section class="col-3">
+      <h5 class="text-warning ml-3">Sorting</h5>
+      <select class="form-select mb-3" (change)="onSortSelected($event)">
+        <option [value]="sort.value" *ngFor="let sort of sortOptions">
+          {{ sort.name }}
+        </option>
+      </select>
+      <h5 class="text-warning ml-3">Brands</h5>
+      <ul class="list-group ml-3">
+        <li
+          class="list-group-item"
+          *ngFor="let brand of brands"
+          [class.active]="brand.id === this.shopParms.brandId"
+          [value]="brand.id"
+          (click)="onBrandSelected(brand.id)"
+        >
+          {{ brand.name }}
+        </li>
+      </ul>
+      <h5 class="text-warning ml-3">Types</h5>
+      <ul class="list-group ml-3">
+        <li
+          class="list-group-item"
+          *ngFor="let type of types"
+          [class.active]="type.id === this.shopParms.typeId"
+          [value]="type.id"
+          (click)="onTypeSelected(type.id)"
+        >
+          {{ type.name }}
+        </li>
+      </ul>
+    </section>
+    <section class="col-9">
+      <div class="d-flex justify-content-between align-items-center pb-2">
+        <header>
+          <span
+            >Showing
+            <strong
+              >{{
+                (this.shopParms.pageIndex - 1) * this.shopParms.pageSize + 1
+              }}
+              -
+              {{
+                this.shopParms.pageIndex * this.shopParms.pageSize >
+                this.shopParms.count
+                  ? this.shopParms.count
+                  : this.shopParms.pageIndex * this.shopParms.pageSize
+              }}</strong
+            >
+            of <strong>{{ this.shopParms.count }}</strong> Results</span
+          >
+        </header>
+        <div class="form-inline d-flex mt-2">
+          <input
+            #search
+            type="text"
+            name="search"
+            id="search"
+            class="form-control mr-2"
+            style="width: 300px"
+            placeholder="Search"
+            (keyup.enter)="onSearch()"
+          />
+          <button
+            (click)="onSearch()"
+            class="btn btn-outline-primary mr-2 my-2"
+          >
+            Search
+          </button>
+          <button (click)="onReset()" class="btn btn-outline-Success my-2">
+            Reset
+          </button>
+        </div>
+      </div>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col" *ngFor="let product of products">
+          <app-product-item [product]="product"></app-product-item>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <pagination
+          [boundaryLinks]="true"
+          [totalItems]="this.shopParms.count"
+          (pageChanged)="onPageChanged($event)"
+          [itemsPerPage]="this.shopParms.pageSize"
+          previousText="&lsaquo;"
+          nextText="&rsaquo;"
+          firstText="&laquo;"
+          lastText="&raquo;"
+        >
+        </pagination>
+      </div>
+    </section>
+  </div>
+</div>
