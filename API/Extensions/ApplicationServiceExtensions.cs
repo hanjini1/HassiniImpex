@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using API.Errors;
 using Core.Contracts;
 using Infrastructure.Data;
+using Infrastructure.Identity;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,9 +18,14 @@ namespace API.Extensions
   {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
+
       services.AddDbContext<StoreContext>(options =>
       {
         options.UseSqlite(config.GetConnectionString("DefaultConnection"));
+      });
+      services.AddDbContext<AppIdentityDbContext>(options =>
+      {
+        options.UseSqlite(config.GetConnectionString("IdentityConnection"));
       });
       services.AddSingleton<IConnectionMultiplexer>(c =>
       {
@@ -40,9 +47,11 @@ namespace API.Extensions
           return new BadRequestObjectResult(errorResponse);
         };
       });
+      services.AddScoped<ITokenService, TokenService>();
       services.AddScoped<IProductRepository, ProductRepository>();
       services.AddScoped((typeof(IGenericRepository<>)), (typeof(GenericRepository<>)));
       services.AddScoped<IBasketRepository, BasketRepository>();
+
       services.AddCors(opt =>
       {
         opt.AddPolicy("CorsPolicy", policy =>

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Errors;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -17,6 +19,13 @@ namespace API.Controllers
     {
       this._context = context ?? throw new ArgumentNullException(nameof(context));
 
+    }
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [HttpGet("testauth")]
+    public ActionResult<string> GetSecretTest()
+    {
+
+      return Ok("Secret Stuff");
     }
 
     [HttpGet("notfound")]
